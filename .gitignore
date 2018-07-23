@@ -1,20 +1,35 @@
 # git stuff
-DS_Store
+.DS_Store
 
-# for devs eyes only
+# packages
+node_modules
+composer.phar
+/vendor/
+
+# config and sensitive info
 config.*
 php.ini
 phpinfo.php
 check.php
+
+# error logging
 error_log
+php_errors.log
 old_*
 bootstrap.*
 webColors.json
 
-# don't push this to remote
+# dependencies and package mngrs
 node_modules
 composer.phar
 /vendor/
+
+# binaries
 img_uploads
 uploads
+
+# db backups
 CDLdump.sql
+
+# other backups
+*.bak
