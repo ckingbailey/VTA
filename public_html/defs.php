@@ -22,6 +22,7 @@ $context = [
     'title' => 'Deficiencies List',
     'pageHeading' => 'Deficiencies',
     'tableName' => 'CDL',
+    'dataDisplayName' => 'deficiency',
     'info' => 'Click Deficiency ID number to see full details',
     'tableHeadings' => [
         'ID' => [ 'value' => 'ID', 'cellWd' => '', 'href' => '/viewDef.php?defID=' ],

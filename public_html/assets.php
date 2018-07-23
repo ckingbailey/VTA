@@ -19,6 +19,7 @@ $context = [
     'title' => 'Asset List',
     'pageHeading' => 'Assets',
     'tableName' => 'asset',
+    'dataDisplayName' => 'asset'
 ];
 
 /* parse url to establish which view to display
