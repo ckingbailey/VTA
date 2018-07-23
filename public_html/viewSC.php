@@ -146,7 +146,7 @@ if(!isset($_POST['Search']) || $_POST['Search'] == NULL) {
                     
         </tr>
         <tr>
-            <form action="ViewSC.php" method="POST">
+            <form action="viewSC.php" method="POST">
                 <input type='hidden' name='Search' value=1>
                     <td><?php
                             $sqlI = "SELECT Item FROM safetyCert ORDER BY Item";
@@ -227,7 +227,7 @@ if(!isset($_POST['Search']) || $_POST['Search'] == NULL) {
     <div  style='display: flex; align-items: center; justify-content: center; hspace:20'>
             <input type='submit' value='Submit' class='btn btn-primary btn-lg' /><p> </p>
     </form>
-    <form action="ViewSC.php">
+    <form action="viewSC.php">
             <input type='submit' value='Reset' class='btn btn-primary btn-lg'  />
     </form>
     </div>

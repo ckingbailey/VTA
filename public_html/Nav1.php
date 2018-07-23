@@ -16,7 +16,7 @@ if(!isset($_SESSION['userID'])) {
       'Home' => 'dashboard.php',
       'Help' => 'help.php',
       'Deficiencies' => 'defs.php',
-      'Safety Certs' => 'ViewSC.php'
+      'Safety Certs' => 'viewSC.php'
     ];
 
   try {
