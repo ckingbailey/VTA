@@ -5,9 +5,11 @@
     </head>
     <body>
         {{ include('nav.html') }}
-        <header class='container page-header'>
-            <h1 class='page-title'>{{ pageHeading }}</h1>
-        </header>
+        {% block pageHeader %}
+            <header class='container page-header'>
+                <h1 class='page-title'>{{ pageHeading }}</h1>
+            </header>
+        {% endblock %}
         <main class='container main-content'>
             {% block breadcrumb %}{% endblock %}
             {% block content %}{% endblock %}

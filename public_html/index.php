@@ -14,13 +14,21 @@
   $twig->addExtension(new Twig_Extension_Debug());
   
   // base context
-  $context = [
+  if (!empty($_SERVER['PATH_INFO'])
+    && explode('/', $_SERVER['PATH_INFO'])[0] === 'demo')
+  {
+    $template = $twig->load('login.html.twig');
+    $context = [
+    ];
+  } else {
+    $template = $twig->load('landing.html.twig');
+    $context = [
       'title' => 'Under Construction - Come back soon',
       'navbarHeading' => null,
       'navHeadingLink' => '/',
       'navItems' => [],
       'pageHeading' => '🚧 Under Construction 🚧'
-  ];
+    ];
+  }
   
-  $twig->display('page.html', $context);
-?>
+  $template->display($context);
