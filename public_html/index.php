@@ -30,9 +30,9 @@
     $context = [
       'meta' => $_SERVER['PHP_SELF'],
       'title' => 'Under Construction - Come back soon',
-      'navbarHeading' => null,
+      'navbarHeading' => '🐦',
       'navHeadingLink' => '/',
-      'navItems' => [],
+      'navItems' => [ '🐦' => '/'],
       'pageHeading' => '🚧 Under Construction 🚧',
       'textColor' => 'text-yellow'
     ];

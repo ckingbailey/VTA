@@ -1,4 +1,4 @@
-{% set navItems = navbarHeading
+{% set defaultNavItems = navbarHeading
     ? {
         'Home': '/dashboard.php',
         'Asset List': '/assets.php',
@@ -16,11 +16,8 @@
 
 {% set navbarHeading = navbarHeading ?: 'Login now' %}
 
-{# placeholder values for Under Construction landing page #}
-{% if 'Under Construction' in title %}
-    {% set navbarHeading = '🐦' %}
-    {% set navItems = {}
-    %}
+{% if not navItems in _context %}
+    {% set navItems = defaultNavItems %}
 {% endif %}
 <nav class="navbar navbar-expand-md navbar-dark navbar-vta-blue">
     <span class="navbar-brand navbar-heading">

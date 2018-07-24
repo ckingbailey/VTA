@@ -1,6 +1,17 @@
 <?php
-    include 'session.php';
+    $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/..';
+    require 'session.php';
+    require_once $baseDir . '/vendor/autoload.php';
     include 'sql_functions/sqlFunctions.php';
+    
+    // init Twig
+    $loader = new Twig_Loader_Filesystem("$baseDir/templates");
+    $twig = new Twig_Environment($loader,
+        [
+            'debug' => true
+        ]
+    );
+    $twig->addExtension(new Twig_Extension_Debug());
 
     $role = $_SESSION['role'];
     $userID = $_SESSION['userID'];
@@ -53,17 +64,13 @@
     ];
 ?>
 <?php
-    $title = 'SVBX - User Account';
+    $title = PROJECT_NAME . ' - My Account';
     include('filestart.php');
     // user account management links
     echo "
         <header class='container page-header'>
             <h1 class='page-title'>$userFullName</h1>
             <h3 class='text-secondary user-role-title'>{$roleT[$role]}</h3>
-            <pre>";
-    var_dump($_SESSION);
-    echo "
-            </pre>
         </header>
         <main class='container main-content'>
             <div class='card item-margin-bottom no-border-radius box-shadow'>
