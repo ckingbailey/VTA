@@ -54,7 +54,7 @@ try {
     $link = connect();
     $link->where('username', $username);
 
-    if (!$result = $link->getOne('users_enc', $fields))
+    if (!$result = $link->getOne('users', $fields))
         throw new mysqli_sql_exception("User does not exist");
 
     $auth = password_verify($password, $result['password']);
@@ -70,7 +70,7 @@ try {
         $_SESSION['timeout'] = time();
 
         $link->where('username', $result['username']);
-        $link->update('users_enc', ['lastLogin' => 'NOW()']);
+        $link->update('users', ['lastLogin' => 'NOW()']);
 
         if (!$result['secQ']) $redirectUrl = 'setSQ.php';
         else $redirectUrl = 'dashboard.php';

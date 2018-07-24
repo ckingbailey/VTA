@@ -1,6 +1,7 @@
 <?php
+$base = $_SERVER['DOCUMENT_ROOT'] . '/..';
 include('sql_functions/sqlFunctions.php');
-session_start();
+require "$base/inc/session.php";
 
 $title = "SVBX - Home";
 //$table = pages;

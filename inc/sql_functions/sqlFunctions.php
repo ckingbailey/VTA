@@ -1,18 +1,18 @@
 <?php
 $base = $_SERVER['DOCUMENT_ROOT'] . '/..';
 require_once "$base/vendor/autoload.php";
-require_once "$base/inc/config.php";
+require_once "$base/config.php";
 // $rejectredirecturl = 'Fail.html';
 // $duplicate = 'duplicate.php'; // this file doesn't exist
 
 function connect() {
-    if (!$db = new MysqliDb(DB_Host, DB_USER, DB_PWD, DB_Name))
+    if (!$db = new MysqliDb(DB_HOST, DB_USER, DB_PWD, DB_NAME))
         throw new mysqli_sql_exception($db->connect_error);
     return $db;
 }
 
 function f_sqlConnect() {
-    $Link = new mysqli(DB_Host, DB_USER, DB_PWD, DB_Name);
+    $Link = new mysqli(DB_HOST, DB_USER, DB_PWD, DB_NAME);
     if ($Link->connect_error) {
         die("Connection failed: " .$Link->connect_error);
             

@@ -1,46 +1,28 @@
 <?php
 require_once('sql_functions/sqlFunctions.php');
-include('session.php');
-// session_start();
+// include('session.php');
+session_start();
 
 $AUserID = $_SESSION['userID'];
-$AUser = "SELECT username FROM users_enc WHERE UserID = $AUserID";
+$AUser = "SELECT username FROM users WHERE UserID = $AUserID";
 $link = f_sqlConnect();
 
-if($result = $link->query($AUser))
-    {
-      /*from the sql results, assign the username that returned to the $username variable*/
-      while($row = $result->fetch_assoc()) {
-        $AUsername = $row['username'];
-      }
-    }
-
-if(!isset( $_POST['username'], $_POST['pwd']))
-{
+if(!isset( $_POST['username'], $_POST['pwd'])) {
     $message = 'Please enter a valid username and password';
 }
-elseif (strlen( $_POST['username']) > 20 || strlen($_POST['username']) < 4)
-{
+elseif (strlen( $_POST['username']) > 20 || strlen($_POST['username']) < 4) {
     $message = 'incorrect length for username';
 }
-elseif (strlen( $_POST['pwd']) > 20 || strlen($_POST['pwd']) < 4)
-{
+elseif (strlen( $_POST['pwd']) > 20 || strlen($_POST['pwd']) < 4) {
     $message = 'incorrect length for password';
 }
-elseif (ctype_alnum($_POST['username']) != true)
-{
+elseif (!ctype_alnum($_POST['username'])) {
     $message = "Username must be alpha numeric";
 }
-elseif (ctype_alnum($_POST['pwd']) != true)
-{
-    $message = "Password must be alpha numeric";
-}
-elseif (!filter_var($_POST['Email'], FILTER_VALIDATE_EMAIL))
-{
+elseif (!filter_var($_POST['Email'], FILTER_VALIDATE_EMAIL)) {
     $message = "Invalid email format";
 }
-elseif (ctype_alnum($_POST['Company']) != true)
-{
+elseif (!ctype_alnum($_POST['Company'])) {
     $message = "Company must be alpha numeric";
 }
 else {
@@ -57,21 +39,21 @@ else {
     $dateAdded = 'NOW()';
 
     try {
-        $sql = "SELECT 1 FROM users_enc WHERE Username = '$username'";
+        $sql = "SELECT 1 FROM users WHERE Username = '$username'";
         if ($result = $link->query($sql)) {
             if ($result->num_rows >= 1) {
                 $link->close();
                 throw new Exception("Username already exists");
             } else $result->close();
         }
-        $sql = "SELECT 1 FROM users_enc WHERE Email = '$email'";
+        $sql = "SELECT 1 FROM users WHERE Email = '$email'";
         if ($result = $link->query($sql)) {
             if ($result->num_rows >= 1) {
                 $link->close();
                 throw new Exception("Email already is already in use");
             }
         }
-        $sql = "INSERT INTO users_enc (Username, Password, Email, firstname, lastname, Created_by, Company, DateAdded) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO users (Username, Password, Email, firstname, lastname, CreatedBy, Company, DateAdded) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         if (!$stmt = $link->prepare($sql)) throw new mysqli_sql_exception($link->error);
         if (!$stmt->bind_param('ssssssss',
             $username,

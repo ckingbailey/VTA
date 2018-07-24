@@ -10,7 +10,7 @@ if(!isset($_SESSION['userID'])) {
 } else {
     /*copy the session UserID to a local variable*/
     $UserID = $_SESSION['userID'];
-    $Username = $_SESSION['username'];
+    $username = $_SESSION['username'];
     $Role = $_SESSION['role'];
     $navItems = [
       'Home' => 'dashboard.php',
@@ -50,7 +50,7 @@ if(!isset($_SESSION['userID'])) {
     }
 
     /* Return Status to User*/
-    if($Username == false) {
+    if(!$username) {
         $login = 'Access Error' .$RoleT;
     } else {
         $navHeading = $firstname.' '.$lastname;

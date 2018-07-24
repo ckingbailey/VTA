@@ -8,7 +8,7 @@
     $link = f_sqlConnect();
 
     // user data
-    $userQry = "SELECT firstname, lastname, inspector FROM users_enc WHERE UserID='$userID'";
+    $userQry = "SELECT firstname, lastname, inspector FROM users WHERE UserID='$userID'";
     $idrQry = "SELECT COUNT(idrID) FROM IDR WHERE UserID='$userID'";
 
     if ($result = $link->query($userQry)) {
@@ -82,7 +82,7 @@
                 </div>
             </div>";
             // render Data Views only if user has permission
-            if ($myIDRs || $idrAuth > 1) {
+            if (!empty($myIDRs) || $idrAuth > 1) {
                 echo "
                     <div class='card item-margin-bottom no-border-radius box-shadow'>
                         <div class='card-body pad-more'>
