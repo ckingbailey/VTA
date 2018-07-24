@@ -8,19 +8,10 @@
     $link = f_sqlConnect();
 
     // user data
-    $userQry = "SELECT firstname, lastname, inspector FROM users WHERE UserID='$userID'";
     $idrQry = "SELECT COUNT(idrID) FROM IDR WHERE UserID='$userID'";
 
-    if ($result = $link->query($userQry)) {
-        $row = $result->fetch_assoc();
-        $userFullName = $row['firstname'].' '.$row['lastname'];
-        $idrAuth = $row['inspector'] ? $role : 0;
-        $result->close();
-    } elseif ($link->error) {
-        $msg = 'Unable to retrieve user account information';
-        $userFullName = $link->error;
-        $idrAuth = 0;
-    }
+    $userFullName = $_SESSION['firstname'] . ' ' . $_SESSION['lastname'];
+    $idrAuth = $_SESSION['inspector'] ? $role : 0;
 
     // check for IDRs submitted by current user
     if ($result = $link->query($idrQry)) {
@@ -69,6 +60,10 @@
         <header class='container page-header'>
             <h1 class='page-title'>$userFullName</h1>
             <h3 class='text-secondary user-role-title'>{$roleT[$role]}</h3>
+            <pre>";
+    var_dump($_SESSION);
+    echo "
+            </pre>
         </header>
         <main class='container main-content'>
             <div class='card item-margin-bottom no-border-radius box-shadow'>

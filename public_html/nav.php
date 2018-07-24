@@ -9,7 +9,7 @@ if(!isset($_SESSION['userID'])) {
     ];
 } else {
     /*copy the session UserID to a local variable*/
-    $UserID = $_SESSION['userID'];
+    $userID = $_SESSION['userID'];
     $username = $_SESSION['username'];
     $Role = $_SESSION['role'];
     $navItems = [
@@ -23,7 +23,7 @@ if(!isset($_SESSION['userID'])) {
     $link = f_sqlConnect();
 
     /* Prep SQL statement to find the user name based on the UserID */
-    $sql = "SELECT Username, firstname, lastname, Role, inspector FROM users_enc WHERE UserID = ".$UserID;
+    $sql = "SELECT Username, firstname, lastname, Role, inspector FROM users WHERE UserID = $userID";
 
     /*execute the sql statement*/
     if($result = $link->query($sql)) {
