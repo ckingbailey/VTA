@@ -70,7 +70,7 @@ if(!isset($_SESSION['userID'])) {
       $navbarHref = 'login.php';
       // if UserID is already set, link to userAccount page
       if (isset($_SESSION['userID'])) {
-        $navbarHref = 'userAccount.php';
+        $navbarHref = 'account.php';
       }
       echo "<a href='{$navbarHref}' class='navbar-link navbar-brand-link'>{$navHeading}</a>";
     ?>

@@ -84,7 +84,7 @@
                 </div>
             </div>";
             // render Data Views only if user has permission
-            if (!empty($myIDRs) || $idrAuth > 1) {
+            if ($role > 20) {
                 echo "
                     <div class='card item-margin-bottom no-border-radius box-shadow'>
                         <div class='card-body pad-more'>

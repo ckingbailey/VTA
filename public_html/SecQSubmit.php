@@ -3,62 +3,48 @@
     include('session.php');
     
     /* Check that question & answer are populated */
-    if(!isset( $_POST['SecA'], $_POST['SecQ']))
-    {
+    if(!isset( $_POST['SecA'], $_POST['SecQ'])) {
         $message = 'Please select a question and enter an answer';
+        $location = 'setSQ.php';
     }
     /* Check answer for alpha numeric characters */
-    elseif (ctype_alnum($_POST['SecA']) != true)
-    {
+    elseif (ctype_alnum($_POST['SecA']) != true) {
         $message = "Answer must be alpha numeric";
+        $location = 'setSQ.php';
     }
-    else
-    {
+    else {
     
     //if(isset($_POST['submit'])) {
         
         $link = f_sqlConnect();
-        $SecQ = $_POST['SecQ'];
-        $seca = $_POST['SecA'];
-        $SecA = filter_var($seca, FILTER_SANITIZE_STRING);
+        $SecQ = filter_input(INPUT_POST, 'SecQ', FILTER_SANITIZE_STRING);
+        $SecA = filter_input(INPUT_POST, 'SecA', FILTER_SANITIZE_STRING);
+        $SecA = password_hash($SecA, PASSWORD_DEFAULT);
         $Username = $_SESSION['username'];
         
         if(!isset($Username)) {
             $message = "No user logged in";
+            $location = 'setSQ.php';
         } else {
-        
-        $query = "
-            UPDATE 
-                users_enc 
-            SET 
-                SecQ = '$SecQ'
-                ,SecA = '$SecA'
-                ,updated_By = '$Username'
-                ,LastUpdated = NOW()
-            WHERE 
-                Username = '$Username'";
-            
-        mysqli_query($link, $query) or
-            die("Insert failed. " . mysqli_error($link));
+            $query = "
+                UPDATE 
+                    users
+                SET 
+                    SecQ = '$SecQ'
+                    ,SecA = '$SecA'
+                    ,updatedBy = '$Username'
+                    ,LastUpdated = NOW()
+                WHERE 
+                    Username = '$Username'";
+                
+            mysqli_query($link, $query) or
+                die("Insert failed. " . mysqli_error($link));
               
             //$message = "<p class='message'>Your security question has been saved</p>";
-            header('location: dashboard.php');
-            } 
+            $location = 'dashboard.php';
+        }
     }
+if (!empty($message)) $_SESSION['errorMsg'] = $message;
+header("Location: $location");
 mysqli_close($link);
-?>
-<HTML>
-    <HEAD>
-        <TITLE>
-            SVBX - LOGON
-        </TITLE>
-        <link rel="stylesheet" href="styles.css" type="text/css"/>
-    </HEAD>
-    <BODY>
-<?php
-        include('filestart.php');
-        echo $message;
-        include 'fileend.php';
-?>
-    </BODY>
-</HTML>
+exit;
