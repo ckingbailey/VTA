@@ -1,21 +1,21 @@
 <?php
-$base = $_SERVER['DOCUMENT_ROOT'] . '/..';
-include('sql_functions/sqlFunctions.php');
-require "$base/inc/session.php";
+$baseDir = $_SERVER['DOCUMENT_ROOT'] . '/..';
+require "$baseDir/inc/sql_functions/sqlFunctions.php";
+require "$baseDir/inc/session.php";
 
 $title = "SVBX - Home";
 //$table = pages;
 
-$System = "SELECT S.System, COUNT(C.GroupToResolve) FROM CDL C LEFT JOIN System S ON C.GroupToResolve=S.SystemID GROUP BY System ORDER BY S.System"; //Count Actions by System
-$Sev = "SELECT S.SeverityName, COUNT(C.Severity) FROM CDL C LEFT JOIN Severity S ON C.Severity=S.SeverityID WHERE C.Status=1 GROUP BY Severity ORDER BY S.SeverityName";
-$Status = "SELECT S.Status, COUNT(C.Status) FROM CDL C LEFT JOIN Status S ON C.Status=S.StatusID GROUP BY Status ORDER BY StatusID";
-$location = "SELECT L.LocationName, COUNT(C.Location) FROM CDL C LEFT JOIN Location L ON L.LocationID=C.Location GROUP BY Location  ORDER BY L.LocationName";
+$System = "SELECT S.System, COUNT(D.GroupToResolve) FROM deficiency D LEFT JOIN System S ON D.GroupToResolve=S.SystemID GROUP BY System ORDER BY S.System"; //Count Actions by System
+$Sev = "SELECT S.SeverityName, COUNT(D.Severity) FROM deficiency D LEFT JOIN Severity S ON D.Severity=S.SeverityID WHERE D.Status=1 GROUP BY Severity ORDER BY S.SeverityName";
+$Status = "SELECT S.Status, COUNT(D.Status) FROM deficiency D LEFT JOIN Status S ON D.Status=S.StatusID GROUP BY Status ORDER BY StatusID";
+$location = "SELECT L.LocationName, COUNT(D.Location) FROM deficiency D LEFT JOIN Location L ON L.LocationID=D.Location GROUP BY Location  ORDER BY L.LocationName";
 $Comp = "SELECT CompName FROM Comp ORDER BY CompName";
 $sqlSys = "SELECT COUNT(*) FROM System"; //Systems Count
 $sqlStat = "SELECT COUNT(*) FROM Status"; //Status Counts
 $sqlSev = "SELECT COUNT(*) FROM Severity"; //Severity Counts
 $sqlLoc = "SELECT COUNT(*) FROM Location"; //Location Counts
-$sqlET = "SELECT COUNT(*) FROM CDL WHERE Status=2"; //Status Closed Counts
+$sqlET = "SELECT COUNT(*) FROM deficiency WHERE Status=2"; //Status Closed Counts
 
 // vars to pass to JS scripts
 $statusOpen = 0;
@@ -40,13 +40,13 @@ $cards = [
   ['location', 'Locations', 'Open Items']
 ];
 $queries = [
-  'status' => 'SELECT S.StatusName, COUNT(C.Status) FROM CDL C LEFT JOIN status S ON C.Status=S.StatusID GROUP BY StatusName ORDER BY StatusID',
-  'severity' => 'SELECT S.SeverityName, COUNT(C.Severity) FROM CDL C LEFT JOIN severity S ON C.Severity=S.SeverityID WHERE C.Status=1 GROUP BY SeverityName ORDER BY S.SeverityName',
-  'system' => 'SELECT S.SystemName, COUNT(C.Status) FROM CDL C LEFT JOIN system S ON C.GroupToResolve=S.SystemID WHERE C.Status=1 GROUP BY SystemName ORDER BY S.SystemName',
-  'location' => 'SELECT L.LocationName, COUNT(C.Status) FROM CDL C LEFT JOIN location L ON L.LocationID=C.Location WHERE Status = 1 GROUP BY LocationName ORDER BY L.LocationName'
+  'status' => 'SELECT S.StatusName, COUNT(D.Status) FROM deficiency D LEFT JOIN status S ON D.Status=S.StatusID GROUP BY StatusName ORDER BY StatusID',
+  'severity' => 'SELECT S.SeverityName, COUNT(D.Severity) FROM deficiency D LEFT JOIN severity S ON D.Severity=S.SeverityID WHERE D.Status=1 GROUP BY SeverityName ORDER BY S.SeverityName',
+  'system' => 'SELECT S.SystemName, COUNT(D.Status) FROM deficiency D LEFT JOIN system S ON D.GroupToResolve=S.SystemID WHERE D.Status=1 GROUP BY SystemName ORDER BY S.SystemName',
+  'location' => 'SELECT L.LocationName, COUNT(D.Status) FROM deficiency D LEFT JOIN location L ON L.LocationID=D.Location WHERE Status = 1 GROUP BY LocationName ORDER BY L.LocationName'
 ];
 
-function writeDashCard($count, &$res, $card) {
+function writeDashCard($count, array $res, $card) {
   global $statusOpen, $statusClosed, $blockSev, $critSev, $majSev, $minSev;
   echo "
     <div class='card dash-card'>
@@ -59,20 +59,20 @@ function writeDashCard($count, &$res, $card) {
             <span class='dash-list-left dash-list-name'>{$card[0]}</span>
             <span class='dash-list-right dash-list-count'>{$card[2]}</span>
           </li>";
-  if ($count && $res) {
-    while ($row = $res->fetch_row()) {
-      if ($row[0] == 'Open') $statusOpen = $row[1];
-      elseif ($row[0] == 'Closed') $statusClosed = $row[1];
-      elseif ($row[0] == 'Blocker') $blockSev = $row[1];
-      elseif ($row[0] == 'Critical') $critSev = $row[1];
-      elseif ($row[0] == 'Major') $majSev = $row[1];
-      elseif ($row[0] == 'Minor') $minSev = $row[1];
-      echo "
-          <li class='dash-list-item'>
-            <span class='dash-list-left'>{$row[0]}</span>
-            <span class='dash-list-right'>{$row[1]}</span>
-          </li>
-      ";
+  if ($count > 0 ) {
+    foreach ($res as $row) {
+        if ($row[0] == 'Open') $statusOpen = $row[1];
+        elseif ($row[0] == 'Closed') $statusClosed = $row[1];
+        elseif ($row[0] == 'Blocker') $blockSev = $row[1];
+        elseif ($row[0] == 'Critical') $critSev = $row[1];
+        elseif ($row[0] == 'Major') $majSev = $row[1];
+        elseif ($row[0] == 'Minor') $minSev = $row[1];
+        echo "
+            <li class='dash-list-item'>
+              <span class='dash-list-left'>{$row[0]}</span>
+              <span class='dash-list-right'>{$row[1]}</span>
+            </li>
+        ";
     }
     echo "</ul>";
     if (count($card) > 3) {
@@ -84,11 +84,11 @@ function writeDashCard($count, &$res, $card) {
         </footer>
     ";
   } else echo "</ul><p class='empty-qry-msg'>0 items returned from database</p>";
-  echo "</div>";
+  echo "</div></div>";
 }
 
 include('filestart.php'); //Provides all HTML starting code
-$link = f_sqlConnect();
+$link = connect();
 ?>
 <header class="container page-header">
   <h1 class="page-title">Database Information</h1>
@@ -96,18 +96,14 @@ $link = f_sqlConnect();
 <main role="main" class="container main-content dashboard">
   <?php
   foreach($cards as $card) {
-    $tableStr = 'SELECT COUNT(*) FROM ' . $card[0];
-    $res = $link->query($tableStr);
-    $count = $res->fetch_row()[0];
-    $res->close();
     $res = $link->query($queries[$card[0]]);
+    $count = $link->count;
     writeDashCard($count, $res, $card);
-    $res->close();
   }
 ?>
 </main>
 <?php
-$link->close();
+$link->disconnect();
 echo "
 <script src='https://d3js.org/d3.v5.js'></script>
 <script src='js/pie_chart.js'></script>
