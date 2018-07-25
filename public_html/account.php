@@ -62,8 +62,7 @@
             'NewStatus' => 'Add new status type'
         ]
     ];
-?>
-<?php
+
     $title = PROJECT_NAME . ' - My Account';
     include('filestart.php');
     // user account management links
@@ -84,7 +83,7 @@
                 </div>
             </div>";
             // render Data Views only if user has permission
-            if ($role > 20) {
+            if ($role >= 30 || !empty($myIDRs)) {
                 echo "
                     <div class='card item-margin-bottom no-border-radius box-shadow'>
                         <div class='card-body pad-more'>
@@ -92,10 +91,10 @@
                             <hr class='thick-grey-line' />
                             <ul class='item-margin-bottom'>";
                             // data views
-                            if ($myIDRs && $idrAuth <= 1) {
+                            if (!empty($myIDRs)) {
                                 printf("<li class='item-margin-bottom'><a href='%s.php'>%s</a></li>", 'idrList', $userLinks['views']['idrList']);
                             }
-                            if ($idrAuth > 1) {
+                            if ($role >= 30) {
                                 foreach ($adminLinks['views'] as $href => $text) {
                                     printf("<li class='item-margin-bottom'><a href='%s.php'>%s</a></li>", $href, $text);
                                 }
@@ -109,7 +108,10 @@
                 echo "
                             </ul>
                         </div>
-                    </div>
+                    </div>";
+            }
+            if ($role >= 30) {
+                echo "
                     <div class='card item-margin-bottom no-border-radius box-shadow'>
                         <div class='card-body pad-more'>
                             <h4 class='text-secondary'>Manage data</h4>
@@ -132,4 +134,4 @@
         <div class="center-content"><a href="logout.php" class="btn btn-primary btn-lg">Logout</a></div>
     </main>';
     include('fileend.php');
-?>
+    exit;

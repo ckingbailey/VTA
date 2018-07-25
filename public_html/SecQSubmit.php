@@ -20,9 +20,9 @@
         $SecQ = filter_input(INPUT_POST, 'SecQ', FILTER_SANITIZE_STRING);
         $SecA = filter_input(INPUT_POST, 'SecA', FILTER_SANITIZE_STRING);
         $SecA = password_hash($SecA, PASSWORD_DEFAULT);
-        $Username = $_SESSION['username'];
+        $userID = $_SESSION['userID'];
         
-        if(!isset($Username)) {
+        if(!isset($userID)) {
             $message = "No user logged in";
             $location = 'setSQ.php';
         } else {
@@ -32,10 +32,10 @@
                 SET 
                     SecQ = '$SecQ'
                     ,SecA = '$SecA'
-                    ,updatedBy = '$Username'
+                    ,updatedBy = '$userID'
                     ,LastUpdated = NOW()
                 WHERE 
-                    Username = '$Username'";
+                    userID = '$userID'";
                 
             mysqli_query($link, $query) or
                 die("Insert failed. " . mysqli_error($link));
