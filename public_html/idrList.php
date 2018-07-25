@@ -5,14 +5,9 @@ include 'sql_functions/sqlFunctions.php';
 $title = 'SVBX - Inspectors\' Daily Reports';
 $userID = $_SESSION['userID'];
 $role = $_SESSION['role'];
+$inspector = $_SESSION['inspector'];
 
 $qry = "SELECT userid, username, firstname, lastname, viewidr FROM users_enc where userid='$userID'";
-
-if ($_SESSION['inspector']) {
-    $idrAuth = $role;
-} else {
-    $idrAuth = 0;
-}
 
 $qry = "SELECT idrID, i.userID, idrForDate, username FROM IDR i JOIN users_enc u on i.UserID=u.UserID";
 $orderBy = " ORDER BY idrID DESC";
@@ -27,11 +22,11 @@ try {
     $link = f_sqlConnect();
     if ($myIDRs = $link->query("$qry WHERE i.UserID='$userID'$orderBy")) {
         // if auth level > 1 OR user has own IDRs, grant permission
-        $idrAuth = ($idrAuth > 10 || $myIDRs->num_rows) ? $idrAuth : 0;
+        $idrAuth = ($myIDRs->num_rows || $inspector) ? $role : 0;
     }
     if ($link->error) throw new mysqli_sql_exception($link->error);
 } catch (Exception $e) {
-    echo "Unable to retrieve your daily reports";
+    $errorMsg = "Unable to retrieve your daily reports";
 } finally {
     $link->close();
 }
@@ -135,6 +130,5 @@ if ($idrAuth) {
         </main>";
     include 'fileend.php';
 } else {
-    include "unauthorised.php";
+    // include "unauthorised.php";
 }
-?>

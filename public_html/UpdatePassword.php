@@ -15,7 +15,7 @@ $Role = $_SESSION['role'];
     <?php
             include('sql_functions/sqlFunctions.php');
 
-            $table = 'users_enc';
+            $table = 'users';
             $Loc = "SELECT Username, Role, firstname, lastname, Email FROM $table WHERE UserID = ".$UserID;
                 //echo '<br>Source table: ' .$table;
 ?>

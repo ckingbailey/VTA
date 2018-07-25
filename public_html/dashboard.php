@@ -3,7 +3,7 @@ $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/..';
 require "$baseDir/inc/sql_functions/sqlFunctions.php";
 require "$baseDir/inc/session.php";
 
-$title = "SVBX - Home";
+$title = PROJECT_NAME . " - Home";
 //$table = pages;
 
 $System = "SELECT S.System, COUNT(D.GroupToResolve) FROM deficiency D LEFT JOIN System S ON D.GroupToResolve=S.SystemID GROUP BY System ORDER BY S.System"; //Count Actions by System

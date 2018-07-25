@@ -1,7 +1,8 @@
 <?php
-    include('session.php');
-    include('sql_functions/sqlFunctions.php');
-    $table = 'users_enc';
+    $baseDir = $_SERVER['DOCUMENT_ROOT'] . '/..';
+    require "$baseDir/inc/session.php";
+    require "$baseDir/inc/sql_functions/sqlFunctions.php";
+    $table = 'users';
     $q = $_SESSION['userID'];
     $ARole = $_SESSION['role'];
     $title = "SVBX - Update Profile";
@@ -72,7 +73,7 @@
                                 <tr class='usertr'>
                                     <th class='userth'>Update Security Answer:</td>
                                     <td class='usertd'>
-                                        <input type='text' name='SecA' maxlength='25' required value='".$SecA."'/>
+                                        <input type='text' name='SecA' maxlength='25' required />
                                     </td>
                                 </tr>
                                 <tr class='usertr'>
