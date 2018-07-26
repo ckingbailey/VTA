@@ -26,6 +26,7 @@ $context = [
     'tableName' => $table,
     'dataDisplayName' => 'deficiency',
     'info' => 'Click Deficiency ID number to see full details',
+    'addPath' => 'newDef.php',
     'tableHeadings' => [
         'ID' => [ 'value' => 'ID', 'cellWd' => '', 'href' => '/viewDef.php?defID=' ],
         'location' => [ 'value' => 'Location', 'cellWd' => '', 'collapse' => 'sm' ],
