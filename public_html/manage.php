@@ -40,7 +40,7 @@ list($action, $tableName) = count($pathParams) >= 2
     ? [ $pathParams[0], $pathParams[1] ]
     : [ 'list', '' ];
 
-$template = $twig->load("$action.html");
+$template = $twig->load("$action.html.twig");
 $context['meta'] = $action;
 
 // included sql file should perform the query and return table data

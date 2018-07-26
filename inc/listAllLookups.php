@@ -21,9 +21,9 @@ try {
     $context['count'] = $link->count;
     $context['data'] = $data;
 } catch (mysqli_sql_exception $e) {
-    echo "<pre id='list_sql_exc' style='color: deepPink'>There was a problem fetching from the database: $e</pre>";
+    $context['errorMsg'] = 'There was a problem fetching from the database';
 } catch (Exception $e) {
-    echo "<pre id='list_Exc' style='color: chocolate'>There was a problem fetching from the database: $e</pre>";
+    $context['errorMsg'] = 'There was a problem fetching from the database';
 } finally {
     $link->disconnect();
 }

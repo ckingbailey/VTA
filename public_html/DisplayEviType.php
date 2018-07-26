@@ -1,7 +1,7 @@
 <?php
 include('session.php');
 include('sql_functions/sqlFunctions.php');
-$title = 'SVBX - Evidence Types';
+$title = PROJECT_NAME . ' - Evidence Types';
 $table = 'evidenceType';
 include('filestart.php');
 $link = f_sqlConnect();
