@@ -3,20 +3,19 @@ require_once 'sql_functions/sqlFunctions.php';
 session_start();
 
 
-$title = "SVBX - Help";
+$title = PROJECT_NAME . " - Help";
 include('filestart.php');
 ?>
 
 <main role="main">
-
-        <header class="container page-header">
-            <h1 class="display-3">Help</h1>
-            <p>If you are having difficulties with the database please contact one of the people below who have administrator rights,<br>otherwise email <a href="mailto:robert.burns@vta.org?subject=SVBX Deficiency Database Issue"  style='color:black'>Robert Burns</a> for assistance.</p>
-        </header>
-        <div class="container main-content">        
+    <header class="container page-header">
+        <h1 class="display-3">Help</h1>
+        <p>If you are having difficulties with the database please contact one of the people below who have administrator rights,<br>otherwise email <a href="mailto:robert.burns@vta.org?subject=SVBX Deficiency Database Issue"  style='color:black'>Robert Burns</a> for assistance.</p>
+    </header>
+    <div class="container main-content">        
 <?php
     $link = f_sqlConnect();
-    $table = 'users_enc';
+    $table = 'users';
     
     // if(!f_tableExists($link, $table, DB_Name)) {
     //     die('<br>Destination table does not exist: '.$table);

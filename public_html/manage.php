@@ -16,6 +16,7 @@ $twig = new Twig_Environment($loader,
 //* DEFAULTS */
 $context = array(
     'navbarHeading' => !empty($_SESSION['firstname']) ? $_SESSION['firstname'] . ' ' . $_SESSION['lastname'] : '',
+    'navHeadingLink' => '/account.php',
     'title' => 'Manage Data',
     'pageHeading' => 'List of lookup tables',
     'cardHeading' => '',

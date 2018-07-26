@@ -21,9 +21,11 @@ try {
     $context['count'] = $link->count;
     $context['data'] = $data;
 } catch (mysqli_sql_exception $e) {
-    $context['errorMsg'] = 'There was a problem fetching from the database';
+    $context['errorMsg'] = 'There was a problem connecting to the database';
+    error_log($e->getMessage());
 } catch (Exception $e) {
     $context['errorMsg'] = 'There was a problem fetching from the database';
+    error_log($e->getMessage());
 } finally {
     $link->disconnect();
 }

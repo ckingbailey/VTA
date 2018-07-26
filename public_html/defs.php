@@ -6,6 +6,8 @@ require_once '../routes/assetRoutes.php';
 
 include 'html_functions/htmlTables.php';
 
+$table = 'deficiency';
+
 // instantiate Twig
 $loader = new Twig_Loader_Filesystem('../templates');
 $twig = new Twig_Environment($loader,
@@ -14,14 +16,14 @@ $twig = new Twig_Environment($loader,
     ]
 );
 $twig->addExtension(new Twig_Extension_Debug());
-$template = $twig->load('table.html');
+$template = $twig->load('table.html.twig');
 
 // base context
 $context = [
     'navbarHeading' => !empty($_SESSION['firstname']) ? $_SESSION['firstname'] . ' ' . $_SESSION['lastname'] : '',
     'title' => 'Deficiencies List',
     'pageHeading' => 'Deficiencies',
-    'tableName' => 'CDL',
+    'tableName' => $table,
     'dataDisplayName' => 'deficiency',
     'info' => 'Click Deficiency ID number to see full details',
     'tableHeadings' => [
@@ -128,7 +130,7 @@ function printSearchBar($link, $get, $formAction) {
 
     };
     // collect elements w/i cols in 2 two rows
-    if ($result = $link->get('CDL', null, 'defID')) {
+    if ($result = $link->get($table, null, 'defID')) {
         // this is the first column so we start a new $cols collector
         $cols = $makeSelectEl('Def #', 'defID', ['defID'], [6, 1], $result);
     } else throw new mysqli_sql_exception("Unable to retrieve defID list");
@@ -157,14 +159,14 @@ function printSearchBar($link, $get, $formAction) {
     $link->join('system s', 'c.systemAffected = s.systemID', 'INNER');
     $link->groupBy('systemName');
     $link->orderBy('systemID');
-    if ($result = $link->get('CDL c', null, 'systemID, systemName')) {
+    if ($result = $link->get("$table c", null, 'systemID, systemName')) {
         $cols .= $makeSelectEl('System affected', 'systemAffected', ['systemID', 'systemName'], [6, 3], $result);
     } else throw new mysqli_sql_exception("Unable to retrieve system list");
 
     $link->join('system s', 'c.groupToResolve = s.systemID', 'INNER');
     $link->groupBy('systemName');
     $link->orderBy('systemID');
-    if ($result = $link->get('CDL c', null, 'systemID, systemName')) {
+    if ($result = $link->get("$table c", null, 'systemID, systemName')) {
         $cols .= $makeSelectEl('Group to resolve', 'groupToResolve', ['systemID', 'systemName'], [6, 3], $result);
     } else throw new mysqli_sql_exception("Unable to retrieve groupToResolve list");
 
@@ -180,17 +182,17 @@ function printSearchBar($link, $get, $formAction) {
     $link->join('location l', 'c.location = l.locationID', 'INNER');
     $link->groupBy('locationName');
     $link->orderBy('locationID');
-    if ($result = $link->get('CDL c', null, 'l.locationID, l.locationName')) {
+    if ($result = $link->get("$table c", null, 'l.locationID, l.locationName')) {
         $cols .= $makeSelectEl('Location', 'location', ['locationID', 'locationName'], [6, 2], $result);
     } else throw new mysqli_sql_exception("Unable to retrieve location list");
 
     $link->groupBy('specLoc');
-    if ($result = $link->get('CDL', null, 'specLoc')) {
+    if ($result = $link->get($table, null, 'specLoc')) {
         $cols .= $makeSelectEl('Specific location', 'specLoc', ['specLoc'], [6, 2], $result);
     } else throw new mysqli_sql_exception("Unable to retrieve specLoc list");
 
     $link->groupBy('identifiedBy');
-    if ($result = $link->get('CDL', null, 'identifiedBy')) {
+    if ($result = $link->get($table, null, 'identifiedBy')) {
         $cols .= $makeSelectEl('Identified by', 'identifiedBy', ['identifiedBy'], [6, 2], $result);
     } else throw new mysqli_sql_exception("Unable to retrieve identifiedBy list");
 
@@ -403,11 +405,13 @@ if(!empty($_GET['search'])) {
             $link->orderBy('ID', 'ASC');
             $link->where('c.status', 3, '<>');
             
-            $context['data'] = $result = $link->get('CDL c', 100, $fields);
+            $context['data'] = $result = $link->get("$table c", 100, $fields);
             $template->display($context);
             // printProjectDefsTable($result, $_SESSION['role']);
+        } catch (Twig_Error $e) {
+            echo $e->getTemplateLine . ' ' . $e->getRawMessage();
         } catch (Exception $e) {
-            echo "<h1 style='color: #ea0;'>{$e->getTemplateLine()}: {$e->getRawMessage()}</h1>";
+            echo $e->getMessage();
         }
     } elseif ($bartPermit) {
         $statusSql = "SELECT COUNT(CASE WHEN s.statusName='open' THEN 1
