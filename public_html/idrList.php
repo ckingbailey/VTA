@@ -9,7 +9,7 @@ $inspector = $_SESSION['inspector'];
 
 $qry = "SELECT userid, username, firstname, lastname, viewidr FROM users_enc where userid='$userID'";
 
-$qry = "SELECT idrID, i.userID, idrForDate, username FROM IDR i JOIN users_enc u on i.UserID=u.UserID";
+$qry = "SELECT idrID, i.userID, idrForDate, username FROM IDR i JOIN users u on i.UserID=u.UserID";
 $orderBy = " ORDER BY idrID DESC";
 
 $errorMsg = [
@@ -22,7 +22,7 @@ try {
     $link = f_sqlConnect();
     if ($myIDRs = $link->query("$qry WHERE i.UserID='$userID'$orderBy")) {
         // if auth level > 1 OR user has own IDRs, grant permission
-        $idrAuth = ($myIDRs->num_rows || $inspector) ? $role : 0;
+        $idrAuth = ($myIDRs->num_rows || $inspector || $role >= 30) ? $role : 0;
     }
     if ($link->error) throw new mysqli_sql_exception($link->error);
 } catch (Exception $e) {
@@ -31,7 +31,9 @@ try {
     $link->close();
 }
 
-if ($idrAuth) {
+if (empty($idrAuth)) {
+    header("Location: unauthorised.php");
+} else {
     include 'filestart.php';
     $link = f_sqlConnect();
     echo "
@@ -46,7 +48,8 @@ if ($idrAuth) {
                             <ul class='nav nav-tabs no-border flex-row flex-nowrap justify-content-center' role='tablist'>";
                                 $active = ' active';
                                 $expanded = " aria-expanded='true'";
-                                if ($idrAuth > 10) {
+                                // if user is admin or higher, show All Reports button
+                                if ($idrAuth >= 30) {
                                     echo "
                                         <li class='item-margin-right-less' role='presentation'>
                                             <a href='#allReports' aria-controls='allReports'{$expanded} role='tab' data-toggle='tab' class='h4 pl-3 pb-3 pr-3 border-dark-blue{$active}'>All Reports</a>
@@ -66,7 +69,7 @@ if ($idrAuth) {
                             <div class='tab-content mt-3 thick-grey-line'>";
                                 // if user is admin or super, query for all IDRs
                                 $active = ' active';
-                                if ($role >= 30) {
+                                if ($idrAuth >= 30) {
                                     if ($result = $link->query($qry.$orderBy)) {
                                         if ($result->num_rows) {
                                             echo "
@@ -86,7 +89,7 @@ if ($idrAuth) {
                                                     </ul>
                                                 </div>";
                                             $active = '';
-                                        } else echo "<h4>That's strange. No reports were found. I suspect something's up.</h4>";
+                                        } else echo "<h4 class='text-center mt-2 mb-2'>No reports found</h4>";
                                         $result->close();
                                     } elseif ($link->error) {
                                         echo "
@@ -129,6 +132,5 @@ if ($idrAuth) {
             </div>
         </main>";
     include 'fileend.php';
-} else {
-    // include "unauthorised.php";
 }
+exit;
