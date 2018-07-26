@@ -33,7 +33,7 @@ if (isset($_GET['defID']) && $_GET['defID']) {
     $sql = file_get_contents("viewDef.sql").$defID;
 
     try {
-        if (!$stmt = $link->prepare("SELECT closureRequested, closureRequestedBy from CDL where defID = ?"))
+        if (!$stmt = $link->prepare("SELECT closureRequested, closureRequestedBy from deficiency where defID = ?"))
             throw new mysqli_sql_exception($link->error);
             
         if (!$stmt->bind_param('i', $defID))
@@ -191,8 +191,8 @@ if (isset($_GET['defID']) && $_GET['defID']) {
         $stmt->close();
 
         // query for comments associated with this Def
-        $sql = "SELECT firstname, lastname, date_created, cdlCommText
-            FROM cdlComments c
+        $sql = "SELECT firstname, lastname, date_created, defCommentText
+            FROM def_comments c
             JOIN users_enc u
             ON c.userID=u.userID
             WHERE c.defID=?
@@ -210,7 +210,7 @@ if (isset($_GET['defID']) && $_GET['defID']) {
         $comments = stmtBindResultArray($stmt) ?: [];
 
         // query for photos linked to this Def
-        if (!$stmt = $link->prepare("SELECT pathToFile FROM CDL_pics WHERE defID=?"))
+        if (!$stmt = $link->prepare("SELECT pathToFile FROM def_pics WHERE defID=?"))
             throw new mysqli_sql_exception($link->error);
 
         if (!$stmt->bind_param('i', $defID))

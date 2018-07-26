@@ -9,7 +9,7 @@ SELECT
     c.SpecLoc as specLoc,
     c.LastUpdated as lastUpdated
 FROM
-    CDL c
+    def c
 LEFT JOIN
     location l
 ON

@@ -22,7 +22,7 @@ if (isset($_SESSION['errorMsg'])) {
 
 try {
     $link = f_sqlConnect();
-    $sql = "SELECT $fieldList FROM CDL WHERE defID=?";
+    $sql = "SELECT $fieldList FROM deficiency WHERE defID=?";
 
     $elements = $requiredElements + $optionalElements + $closureElements;
 
@@ -44,8 +44,8 @@ try {
     }
 
     // query for comments associated with this Def
-    $sql = "SELECT firstname, lastname, date_created, cdlCommText
-        FROM cdlComments c
+    $sql = "SELECT firstname, lastname, date_created, defCommentText
+        FROM def_comments c
         JOIN users_enc u
         ON c.userID=u.userID
         WHERE c.defID=?
@@ -62,7 +62,7 @@ try {
     $stmt->close();
 
     // query for photos linked to this Def
-    if (!$stmt = $link->prepare("SELECT pathToFile FROM CDL_pics WHERE defID=?"))
+    if (!$stmt = $link->prepare("SELECT pathToFile FROM def_pics WHERE defID=?"))
         throw new mysqli_sql_exception($link->error);
 
     if (!$stmt->bind_param('i', $defID))
@@ -78,7 +78,7 @@ try {
 
     $stmt->close();
     
-    if (!$stmt = $link->prepare("SELECT closureRequested, closureRequestedBy from CDL where defID = ?"))
+    if (!$stmt = $link->prepare("SELECT closureRequested, closureRequestedBy from deficiency where defID = ?"))
         throw new mysqli_sql_exception($link->error);
         
     if (!$stmt->bind_param('i', $defID))
@@ -130,7 +130,7 @@ try {
         ],
         [
             $elements['oldID'],
-            $elements['CDL_pics']
+            $elements['def_pics']
         ]
     ];
 
@@ -202,10 +202,10 @@ try {
         echo "
             </h5>
             <div id='comments' class='collapse item-margin-bottom'>";
-        echo returnRow([ $optionalElements['cdlCommText'] ], [ 'colWd' => 8 ]);
+        echo returnRow([ $optionalElements['defCommentText'] ], [ 'colWd' => 8 ]);
             foreach ($comments as $comment) {
                 $userFullName = $comment['firstname'].' '.$comment['lastname'];
-                $text = stripcslashes($comment['cdlCommText']);
+                $text = stripcslashes($comment['defCommentText']);
                 printf($commentFormat, $userFullName, $comment['date_created'], $text);
             }
         echo "</div>";

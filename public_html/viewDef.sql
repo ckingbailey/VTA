@@ -25,7 +25,7 @@ SELECT
     D.dueDate as dueDate,
     yn.yesNoName as safetyCert,
     dt.defTypeName as defType
-FROM CDL D
+FROM deficiency D
 LEFT JOIN requiredBy R
 ON R.ReqByID = D.RequiredBy
 LEFT JOIN location L

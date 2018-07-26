@@ -22,20 +22,20 @@ if (!count($post) || !$defID) {
 }
 
 // if photo in POST it will be committed to a separate table
-if ($_FILES['CDL_pics']['size']
-    && $_FILES['CDL_pics']['name']
-    && $_FILES['CDL_pics']['tmp_name']
-    && $_FILES['CDL_pics']['type']) {
-    $CDL_pics = $_FILES['CDL_pics'];
-} else $CDL_pics = null;
+if ($_FILES['def_pics']['size']
+    && $_FILES['def_pics']['name']
+    && $_FILES['def_pics']['tmp_name']
+    && $_FILES['def_pics']['type']) {
+    $def_pics = $_FILES['def_pics'];
+} else $def_pics = null;
 
 // hold onto comments separately
-$cdlCommText = trim($post['cdlCommText']);
+$defCommentText = trim($post['defCommentText']);
 
 // unset keys that will not be updated before imploding back to string
 unset(
     $post['defID'],
-    $post['cdlCommText']
+    $post['defCommentText']
 );
 
 // if Closed, set dateClosed
@@ -58,24 +58,24 @@ $post['updated_by'] = $username;
 
 try {
     $link = connect();
-    // update CDL table
+    // update deficiency table
     $link->where('defID', $defID);
-    $link->update('CDL', $post);
+    $link->update('deficiency', $post);
 
     // if INSERT succesful, prepare, upload, and INSERT photo
-    if ($CDL_pics) {
-        // $sql = "INSERT CDL_pics (defID, pathToFile) values (?, ?)";
+    if ($def_pics) {
+        // $sql = "INSERT def_pics (defID, pathToFile) values (?, ?)";
 
         // execute save image and hold onto its new file path
         try {
-            $pathToFile = saveImgToServer($_FILES['CDL_pics'], $defID);
+            $pathToFile = saveImgToServer($_FILES['def_pics'], $defID);
 
             $fileData = [
                 'pathToFile' => $pathToFile,
                 'defID' => $defID
             ];
 
-            $link->insert('CDL_pics', $fileData);
+            $link->insert('def_pics', $fileData);
         } catch (uploadException $e) {
             header("Location: updateDef.php?defID=$defID");
             $_SESSION['errorMsg'] = "There was an error uploading your file: $e";
@@ -86,16 +86,16 @@ try {
     }
 
     // if comment submitted commit it to a separate table
-    if (strlen($cdlCommText)) {
-        // $sql = "INSERT cdlComments (defID, cdlCommText, userID) VALUES (?, ?, ?)";
+    if (strlen($defCommentText)) {
+        // $sql = "INSERT def_comments (defID, defCommentText, userID) VALUES (?, ?, ?)";
         try {
             $commentData = [
                 'defID' => $defID,
-                'cdlCommText' => filter_var($cdlCommText, FILTER_SANITIZE_SPECIAL_CHARS),
+                'defCommentText' => filter_var($defCommentText, FILTER_SANITIZE_SPECIAL_CHARS),
                 'userID' => $userID
             ];
 
-            $link->insert('cdlComments', $commentData);
+            $link->insert('def_comments', $commentData);
         } catch (Exception $e) {
             header("Location: updateDef.php?defID=$defID");
             $_SESSION['errorMsg'] = "There was a problem recording your comment: $e";
@@ -112,7 +112,7 @@ try {
             $systemID = $post['groupToResolve'];
         } else {
             $link->where('defID', $defID);
-            $systemID = $link->getValue('CDL', 'groupToResolve');
+            $systemID = $link->getValue('deficiency', 'groupToResolve');
         }
         $link->join('users_enc u', 's.lead = u.userid', 'LEFT');
         $link->where('systemID', $systemID);

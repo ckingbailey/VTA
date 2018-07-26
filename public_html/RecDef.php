@@ -51,15 +51,15 @@ if (!count($post)) {
 }
 
 // if photo in POST it will be committed to a separate table
-if ($_FILES['CDL_pics']['size']
-    && $_FILES['CDL_pics']['name']
-    && $_FILES['CDL_pics']['tmp_name']
-    && $_FILES['CDL_pics']['type']) {
-    $CDL_pics = $_FILES['CDL_pics'];
-} else $CDL_pics = null;
+if ($_FILES['def_pics']['size']
+    && $_FILES['def_pics']['name']
+    && $_FILES['def_pics']['tmp_name']
+    && $_FILES['def_pics']['type']) {
+    $def_pics = $_FILES['def_pics'];
+} else $def_pics = null;
 
 // hold onto comments separately
-$cdlCommText = trim($_POST['cdlCommText']);
+$defCommentText = trim($_POST['defCommentText']);
     
 // prepare parameterized string from external .sql file
 $fieldList = preg_replace('/\s+/', '', file_get_contents('updateDef.sql'));
@@ -73,7 +73,7 @@ unset(
 );
 
 $assignmentList = implode(' = ?, ', array_keys($fieldsArr)).' = ?';
-$sql = 'INSERT INTO CDL ('
+$sql = 'INSERT INTO deficiency ('
   . implode(', ', array_keys($post))
   . ') VALUES ('
   . implode(',', array_fill(0, count($post), '?'))
@@ -84,12 +84,12 @@ $sql = 'INSERT INTO CDL ('
 $post += ['created_by' => $username];
 
 // if photo in POST it will be committed to a separate table
-if ($_FILES['CDL_pics']['size']
-    && $_FILES['CDL_pics']['name']
-    && $_FILES['CDL_pics']['tmp_name']
-    && $_FILES['CDL_pics']['type']) {
-    $CDL_pics = $_FILES['CDL_pics'];
-} else $CDL_pics = null;
+if ($_FILES['def_pics']['size']
+    && $_FILES['def_pics']['name']
+    && $_FILES['def_pics']['tmp_name']
+    && $_FILES['def_pics']['type']) {
+    $def_pics = $_FILES['def_pics'];
+} else $def_pics = null;
 
 try {
     $linkBtn = "<a href='updateDef.php?defID=%s' style='text-decoration: none; border: 2px solid plum; padding: .35rem;'>Back to Update Def</a>";
@@ -131,10 +131,10 @@ try {
     $stmt->close();
     
     // if INSERT succesful, prepare, upload, and INSERT photo
-    if ($CDL_pics) {
-        $sql = "INSERT CDL_pics (defID, pathToFile) values (?, ?)";
+    if ($def_pics) {
+        $sql = "INSERT def_pics (defID, pathToFile) values (?, ?)";
         
-        $pathToFile = $link->escape_string(saveImgToServer($_FILES['CDL_pics'], $defID));
+        $pathToFile = $link->escape_string(saveImgToServer($_FILES['def_pics'], $defID));
         if ($pathToFile) {
             if (!$stmt = $link->prepare($sql)) throw new Exception($link->error);
             
@@ -147,11 +147,11 @@ try {
     }
     
     // if comment submitted commit it to a separate table
-    if (strlen($cdlCommText)) {
-        $sql = "INSERT cdlComments (defID, cdlCommText, userID) VALUES (?, ?, ?)";
+    if (strlen($defCommentText)) {
+        $sql = "INSERT def_comments (defID, defCommentText, userID) VALUES (?, ?, ?)";
         $commentText = filter_var(
             filter_var(
-                $cdlCommText,
+                $defCommentText,
                 FILTER_SANITIZE_STRING,
                 FILTER_FLAG_NO_ENCODE_QUOTES
             ), FILTER_SANITIZE_SPECIAL_CHARS);

@@ -129,7 +129,7 @@ function returnCommentsHTML(array $comments) {
 
     foreach ($comments as $comment) {
         $userFullName = $comment['firstname'].' '.$comment['lastname'];
-        $text = stripcslashes($comment['cdlCommText']);
+        $text = stripcslashes($comment['defCommentText']);
         $content .= sprintf($commentFormat, $userFullName, $comment['date_created'], $text);
     }
 
@@ -281,17 +281,17 @@ $optionalElements = [
         "query" => null,
         'value' => ''
     ],
-    'CDL_pics' => [
-        'label' => returnLabel('CDL_pics', 'Upload Photo'),
+    'def_pics' => [
+        'label' => returnLabel('def_pics', 'Upload Photo'),
         'tagName' => 'input',
-        'element' => "<input type='file' accept='image/*' name='CDL_pics' id='CDL_pics' class='form-control form-control-file'>",
+        'element' => "<input type='file' accept='image/*' name='def_pics' id='def_pics' class='form-control form-control-file'>",
         'type' => 'file',
         'query' => null
     ],
-    'cdlCommText' => [
-        "label" => returnLabel('cdlCommText', 'Add comment'),
+    'defCommentText' => [
+        "label" => returnLabel('defCommentText', 'Add comment'),
         "tagName" => "textarea",
-        "element" => "<textarea name='cdlCommText' id='cdlCommText' class='form-control' maxlength='1000'>%s</textarea>",
+        "element" => "<textarea name='defCommentText' id='defCommentText' class='form-control' maxlength='1000'>%s</textarea>",
         "type" => null,
         "query" => null,
         'value' => ''

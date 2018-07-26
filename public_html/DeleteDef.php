@@ -15,7 +15,7 @@ if(!empty($_POST)) {
     
     $link = f_sqlConnect();
  
-    $sql = "UPDATE CDL
+    $sql = "UPDATE deficiency
             SET 
                  Status = '3'
                 ,updatedBy = '".$AUsername."'

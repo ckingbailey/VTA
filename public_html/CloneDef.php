@@ -5,6 +5,7 @@ include('html_functions/bootstrapGrid.php');
 include('sql_functions/stmtBindResultArray.php');
 
 $title = "SVBX - Update Deficiency";
+$table = 'deficiency';
 $role = $_SESSION['role'];
 $defID = $_GET['defID'];
 
@@ -19,7 +20,7 @@ include('filestart.php');
 
 $link = f_sqlConnect();
 try {
-    $sql = 'SELECT ' . $fieldList . ' FROM CDL WHERE defID = ?';
+    $sql = "SELECT $fieldList FROM $table WHERE defID = ?";
 
     $elements = $requiredElements + $optionalElements + $closureElements;
 
@@ -35,8 +36,8 @@ try {
     $stmt->close();
 
     // query for comments associated with this Def
-    $sql = "SELECT firstname, lastname, date_created, cdlCommText
-        FROM cdlComments c
+    $sql = "SELECT firstname, lastname, date_created, defCommentText
+        FROM def_comments c
         JOIN users_enc u
         ON c.userID=u.userID
         WHERE c.defID=?
@@ -91,10 +92,10 @@ try {
         ],
         [
             $elements['oldID'],
-            $elements['CDL_pics']
+            $elements['def_pics']
         ],
         [
-            $elements['cdlCommText']
+            $elements['defCommentText']
         ]
     ];
 

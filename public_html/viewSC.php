@@ -285,9 +285,6 @@ if(!isset($_POST['Search']) || $_POST['Search'] == NULL) {
                     <br />
                     <br>Unable to connect<br>
                     </div>";
-                    echo $sql.'<br /><br />';
-                    //echo mysqli_error();
-                    //echo "<BR>Def ID: ".$DefID;
                   exit();  
                 } 
     include('fileend.php');
