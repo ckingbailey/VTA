@@ -74,7 +74,7 @@ function f_getIP() {
 
 function f_tableExists(mysqli $link,$tablename,$database = false) {
     if(!$database) {
-        $res = mysqli-query($link, "SELECT_DATABASE()"); // the '-' here is a typo. don't correct it until you are ready to debug the consequences
+        $res = mysqli_query($link, "SELECT_DATABASE()"); // the '-' here is a typo. don't correct it until you are ready to debug the consequences
         $database = mysqli_result($res, 0);
     }
     $res = mysqli_query($link, "SELECT * 

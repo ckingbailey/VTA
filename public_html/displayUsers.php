@@ -1,18 +1,18 @@
 <?php
 include('session.php');
 include('sql_functions/sqlFunctions.php');
-$table = 'users_enc';
-$title = "SVBX - Display Users";
+$table = 'users';
+$title = PROJECT_NAME . " - Display Users";
 include('filestart.php');
 $adminID = $_SESSION['userID'];
 $Role = $_SESSION['role'];
 
 $link = f_sqlConnect();
-    if(!f_tableExists($link, $table, DB_Name)) {
+    if(!f_tableExists($link, $table, DB_NAME)) {
         die('<br>Destination table does not exist: '.$table);
     }
 
-    $sql = "SELECT UserID, Username, firstname, lastname, Role, LastUpdated, updated_By, DateAdded, Created_by, Email, Company, LastLogin FROM $table ORDER BY lastname";
+    $sql = "SELECT UserID, Username, firstname, lastname, Role, LastUpdated, updatedBy, DateAdded, CreatedBy, Email, Company, LastLogin FROM $table ORDER BY lastname";
     $sql1 = "SELECT COUNT(*) FROM $table";
 
     if($result = mysqli_query($link,$sql1)) {
